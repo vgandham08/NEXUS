@@ -1,0 +1,20 @@
+{
+  "name": "nexus-erp-ai-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm --workspace frontend run dev\" \"npm --workspace backend run server\"",
+    "frontend": "npm --workspace frontend run dev",
+    "backend": "npm --workspace backend run server",
+    "build": "npm --workspace frontend run build",
+    "lint": "npm --workspace frontend run lint && npm --workspace backend run lint",
+    "db:seed": "npm --workspace backend run db:seed"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,117 @@
+// NexusERP AI Relational Database Schema (SQLite / PostgreSQL)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String     @id @default(uuid())
+  name        String
+  email       String     @unique
+  password    String
+  role        String     @default("ADMIN")
+  avatar      String?
+  department  String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  auditLogs   AuditLog[]
+}
+
+model Customer {
+  id           String         @id @default(uuid())
+  name         String
+  email        String         @unique
+  phone        String
+  company      String
+  status       String         @default("NEW")
+  tags         String         @default("Enterprise")
+  avatar       String?
+  pinned       Boolean        @default(false)
+  totalSpent   Float          @default(0.0)
+  churnRisk    String         @default("LOW")
+  notes        String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  challans     SalesChallan[]
+  followUps    FollowUp[]
+}
+
+model Product {
+  id                String       @id @default(uuid())
+  name              String
+  sku               String       @unique
+  category          String
+  price             Float
+  stockQuantity     Int          @default(0)
+  minStockLevel     Int          @default(10)
+  warehouseLocation String
+  imageUrl          String?
+  status            String       @default("IN_STOCK")
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  stockLogs         StockLog[]
+  salesItems        SalesItem[]
+}
+
+model StockLog {
+  id          String   @id @default(uuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  type        String   @default("OUT")
+  quantity    Int
+  referenceNo String
+  reason      String
+  user        String
+  createdAt   DateTime @default(now())
+}
+
+model SalesChallan {
+  id            String      @id @default(uuid())
+  challanNumber String      @unique
+  customerId    String
+  customer      Customer    @relation(fields: [customerId], references: [id])
+  status        String      @default("DRAFT")
+  subtotal      Float
+  taxAmount     Float
+  grandTotal    Float
+  notes         String?
+  createdBy     String
+  createdAt     DateTime    @default(now())
+  items         SalesItem[]
+}
+
+model SalesItem {
+  id         String       @id @default(uuid())
+  challanId  String
+  challan    SalesChallan @relation(fields: [challanId], references: [id], onDelete: Cascade)
+  productId  String
+  product    Product      @relation(fields: [productId], references: [id])
+  quantity   Int
+  unitPrice  Float
+  totalPrice Float
+}
+
+model FollowUp {
+  id         String   @id @default(uuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  note       String
+  dueDate    DateTime
+  completed  Boolean  @default(false)
+  priority   String   @default("MEDIUM")
+  createdAt  DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  action    String
+  details   String
+  ipAddress String
+  createdAt DateTime @default(now())
+}
