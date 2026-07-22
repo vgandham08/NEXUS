@@ -4,7 +4,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "start": "tsx server/index.ts",
     "server": "tsx server/index.ts",
+    "build": "prisma generate",
     "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
