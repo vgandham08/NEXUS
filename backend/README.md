@@ -101,7 +101,7 @@ npm install
 ### 2. Run Local Development Server
 Launch both the Vite Frontend and Express Backend concurrently:
 ```bash
-npm run start
+npm run dev
 ```
 - **Frontend App**: [http://localhost:3000](http://localhost:3000)
 - **Backend API**: [http://localhost:5000/api/health](http://localhost:5000/api/health)
